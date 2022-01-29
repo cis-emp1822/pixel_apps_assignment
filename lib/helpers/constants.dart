@@ -1,3 +1,3 @@
 class Constant {
-  static const baseUrl = 'https://itunes.apple.com/';
+  static const baseUrl = 'https://itunes.apple.com';
 }
