@@ -28,7 +28,16 @@ class AlbumHolder extends StatelessWidget {
               )),
             if (album!.artworkUrl100 != null) Text(album!.collectionName!),
             if (album!.releaseDate != null && album!.releaseDate!.length > 4)
-              Text(album!.releaseDate!.substring(0, 4)),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(album!.releaseDate!.substring(0, 4)),
+                  const SizedBox(
+                    width: 30,
+                  ),
+                  Text(r'$' + album!.collectionPrice.toString())
+                ],
+              ),
           ],
         ),
         Positioned(
