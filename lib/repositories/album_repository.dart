@@ -1,14 +1,12 @@
 import 'dart:convert';
 
-import 'package:hive/hive.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:pixel_apps_assignment/models/albums.dart';
 import 'package:http/http.dart' as http;
 
 import '../helpers/constants.dart';
 
 class AlbumsRepository {
-  final box = Hive.box('albumBox');
-
   Future<Albums?> fetchJackJohnson() async {
     final response = await http
         .get(Uri.parse("${Constant.baseUrl}/lookup?id=909253&entity=album"));
@@ -22,8 +20,9 @@ class AlbumsRepository {
   }
 
   Future<Albums> toggleFavoriteAlbum(Album? album) async {
+    final box = GetStorage();
     final Albums albums =
-        box.get('albums') ?? Albums(resultCount: 0, results: []);
+        box.read('albums') ?? Albums(resultCount: 0, results: []);
     if (album == null) return albums;
     if (albums.results!.contains(album)) {
       albums.results!.remove(album);
@@ -32,8 +31,8 @@ class AlbumsRepository {
       albums.results!.add(album);
       albums.resultCount = albums.resultCount! + 1;
     }
-    await box.put('albums', albums);
-    await box.flush();
+    await box.write('albums', albums);
+    await box.save();
     return albums;
   }
 }

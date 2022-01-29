@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:pixel_apps_assignment/view_models/albums_view_model.dart';
 import 'package:pixel_apps_assignment/views/my_home_page.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+void main() async {
+  await GetStorage.init();
   runApp(const MyApp());
 }
 
@@ -13,7 +15,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
         providers: [
-          Provider<AlbumViewModel>(
+          ChangeNotifierProvider<AlbumViewModel>(
             create: (context) => AlbumViewModel(),
           )
         ],

@@ -1,22 +1,29 @@
 import 'dart:developer';
+import 'package:flutter/widgets.dart';
 import 'package:pixel_apps_assignment/models/albums.dart';
 import 'package:pixel_apps_assignment/models/api_response.dart';
 import 'package:pixel_apps_assignment/repositories/album_repository.dart';
 import 'package:rxdart/rxdart.dart';
 
-class AlbumViewModel {
-  ApiResponse get response {
-    return _apiResponse.value;
+class AlbumViewModel extends ChangeNotifier {
+  AlbumViewModel() {
+    toggleFavoriteAlbum(null);
+    fetchAlbumData();
   }
 
-  Album? get selectedAlbum {
-    return _selectedAlbum.valueOrNull;
+  Stream<ApiResponse> get response {
+    return _apiResponse.stream;
   }
 
-  Albums? get favoriteAlbums {
-    return _favoriteAlbums.valueOrNull;
+  Stream<Album?> get selectedAlbum {
+    return _selectedAlbum.stream;
   }
 
+  Stream<Albums?> get favoriteAlbums {
+    return _favoriteAlbums.stream;
+  }
+
+  int index = 0;
   final AlbumsRepository albumsRepository = AlbumsRepository();
   final _apiResponse =
       BehaviorSubject<ApiResponse>.seeded(ApiResponse.initial('Empty data'));
@@ -43,9 +50,16 @@ class AlbumViewModel {
     _favoriteAlbums.add(albums);
   }
 
+  void setSelectedIndex(int value) {
+    index = value;
+    notifyListeners();
+  }
+
+  @override
   dispose() {
     _apiResponse.close();
     _selectedAlbum.close();
     _favoriteAlbums.close();
+    super.dispose();
   }
 }
