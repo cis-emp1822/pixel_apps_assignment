@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:pixel_apps_assignment/models/albums.dart';
+import 'package:pixel_apps_assignment/models/api_response.dart';
 import 'package:pixel_apps_assignment/view_models/albums_view_model.dart';
+import 'package:pixel_apps_assignment/views/tabs/all_songs_widget.dart';
+import 'package:pixel_apps_assignment/views/tabs/favorite_widget.dart';
 import 'package:provider/provider.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -18,20 +22,26 @@ class _MyHomePageState extends State<MyHomePage> {
         appBar: AppBar(
           title: Text(widget.title!),
         ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              const Text(
-                'You have pushed the button this many times:',
-              ),
-              Text(
-                '77',
-                style: Theme.of(context).textTheme.headline4,
-              ),
-            ],
-          ),
-        ),
+        body: Center(child: Builder(builder: (context) {
+          switch (viewModel.index) {
+            case 0:
+              return StreamBuilder<ApiResponse?>(
+                  stream: viewModel.response,
+                  builder: (context, snapshot) => AllSongsWidget(
+                        apiResponse: snapshot.data,
+                      ));
+            case 1:
+              return StreamBuilder<Albums?>(
+                  stream: viewModel.favoriteAlbums,
+                  builder: (context, snapshot) => FavoriteWidget(
+                        albums: snapshot.data,
+                      ));
+            default:
+              return const SizedBox(
+                height: 0,
+              );
+          }
+        })),
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: viewModel.index,
           onTap: viewModel.setSelectedIndex,
