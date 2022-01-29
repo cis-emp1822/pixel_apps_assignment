@@ -21,8 +21,12 @@ class AlbumsRepository {
 
   Future<Albums> toggleFavoriteAlbum(Album? album) async {
     final box = GetStorage();
-    final Albums albums =
-        box.read('albums') ?? Albums(resultCount: 0, results: []);
+    final Albums albums;
+    if (box.read('albums') == null || box.read('albums') is! String) {
+      albums = Albums(resultCount: 0, results: []);
+    } else {
+      albums = Albums.fromJson(jsonDecode(box.read('albums')));
+    }
     if (album == null) return albums;
     if (albums.results!.contains(album)) {
       albums.results!.remove(album);
@@ -31,7 +35,7 @@ class AlbumsRepository {
       albums.results!.add(album);
       albums.resultCount = albums.resultCount! + 1;
     }
-    await box.write('albums', albums);
+    await box.write('albums', jsonEncode(albums.toJson()));
     await box.save();
     return albums;
   }

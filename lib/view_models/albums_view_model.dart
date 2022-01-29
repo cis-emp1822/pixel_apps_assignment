@@ -48,7 +48,12 @@ class AlbumViewModel extends ChangeNotifier {
   void toggleFavoriteAlbum(Album? album) async {
     final albums = await albumsRepository.toggleFavoriteAlbum(album);
     _favoriteAlbums.add(albums);
+    notifyListeners();
   }
+
+  bool checkFavoriteAlbum(Album? album) =>
+      _favoriteAlbums.stream.hasValue &&
+      _favoriteAlbums.stream.value.results!.contains(album);
 
   void setSelectedIndex(int value) {
     index = value;
